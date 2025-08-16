@@ -1,25 +1,15 @@
+import os
+from solana.rpc.api import Client
+from solana.account import Account
 
-# Telegram-Controlled Solana Trading Bot
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+PHANTOM_KEYS = os.getenv("PHANTOM_KEYS", "").split(",")
 
-## Setup Instructions
+WALLETS = []
+for key in PHANTOM_KEYS:
+    wallet_account = Account(bytes.fromhex(key))
+    client = Client("https://api.mainnet-beta.solana.com")
+    WALLETS.append({"account": wallet_account, "client": client})
 
-1. Deploy this repo to Railway (https://railway.app) or any Python cloud platform.
-2. Set environment variables:
-   - TELEGRAM_BOT_TOKEN=<Your Telegram Bot Token>
-   - TELEGRAM_CHAT_ID=<Your Telegram Chat ID>
-   - PHANTOM_KEYS=<Comma-separated Phantom wallet private keys>
 
-3. Deploy and start the project. You should receive a Telegram alert:
-   "🚀 Telegram-controlled Solana Trading Bot Started - Mainnet Ready"
-
-## Commands via Telegram
-- /start → Start trading
-- /stop → Stop trading
-- /status → Check wallet balances
-- /portfolio → Check total portfolio value
-
-## Notes
-- Max simultaneous trades: 3
-- Daily CU limit: 50,000
-- Conditional holding: portfolio > $1,000,000
-- Minimum balance to trade: $0.1
